@@ -1,19 +1,15 @@
+import axios from 'axios'
+
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '/api'
 
+export const apiClient = axios.create({
+  baseURL: API_BASE_URL,
+  headers: { Accept: 'application/json' },
+})
+
 export async function apiRequest(path, options = {}) {
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    ...options,
-    headers: {
-      Accept: 'application/json',
-      ...(options.body ? { 'Content-Type': 'application/json' } : {}),
-      ...options.headers,
-    },
-  })
-
-  if (!response.ok) {
-    throw new Error(`API request failed (${response.status}): ${response.statusText}`)
-  }
-
-  if (response.status === 204) return null
-  return response.json()
+  const { body, ...config } = options
+  const data = typeof body === 'string' ? JSON.parse(body) : body
+  const response = await apiClient.request({ url: path, data, ...config })
+  return response.status === 204 ? null : response.data
 }

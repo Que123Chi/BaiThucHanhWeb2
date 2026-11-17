@@ -1,5 +1,6 @@
-import { apiRequest } from './client.js'
+import { apiClient } from './client.js'
 
-export const getMaintenanceRequests = () => apiRequest('/maintenance-requests')
-export const createMaintenanceRequest = (payload) => apiRequest('/maintenance-requests', { method: 'POST', body: JSON.stringify(payload) })
-export const updateMaintenanceRequest = (id, payload) => apiRequest(`/maintenance-requests/${encodeURIComponent(id)}`, { method: 'PATCH', body: JSON.stringify(payload) })
+export const getMaintenanceRequests = () => apiClient.get('/maintenance-requests').then(({ data }) => data)
+export const createMaintenanceRequest = (payload) => apiClient.post('/maintenance-requests', payload).then(({ data }) => data)
+export const updateMaintenanceRequest = (id, payload) => apiClient.put(`/maintenance-requests/${encodeURIComponent(id)}`, payload).then(({ data }) => data)
+export const deleteMaintenanceRequest = (id) => apiClient.delete(`/maintenance-requests/${encodeURIComponent(id)}`)

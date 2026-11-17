@@ -1,4 +1,6 @@
-import { apiRequest } from './client.js'
+import { apiClient } from './client.js'
 
-export const getWorkOrders = () => apiRequest('/work-orders')
-export const updateWorkOrder = (id, payload) => apiRequest(`/work-orders/${encodeURIComponent(id)}`, { method: 'PATCH', body: JSON.stringify(payload) })
+export const getWorkOrders = () => apiClient.get('/work-orders').then(({ data }) => data)
+export const createWorkOrder = (payload) => apiClient.post('/work-orders', payload).then(({ data }) => data)
+export const updateWorkOrder = (id, payload) => apiClient.put(`/work-orders/${encodeURIComponent(id)}`, payload).then(({ data }) => data)
+export const deleteWorkOrder = (id) => apiClient.delete(`/work-orders/${encodeURIComponent(id)}`)
