@@ -37,16 +37,33 @@ src/
 
 ## Backend ASP.NET Core và kết nối database
 
-Backend mẫu nằm trong `backend/FixFlow.Api`, dùng ASP.NET Core 8, controller CRUD cho thiết bị, EF Core 8 và SQLite. Khi chạy lần đầu cần tạo database từ migration:
+Backend thiết bị nằm trong `backend/FixFlow.Api`, dùng ASP.NET Core 8, PostgreSQL và EF Core 8. Backend người dùng nằm trong `backend/user-service`; hai service dùng chung PostgreSQL cluster nhưng có database/user riêng (`fixflow_dotnet`/`fixflow_app` và `cmms_dotnet`/`users_app`) để migration và quyền truy cập không xung đột.
+
+PostgreSQL 17 được cài trên máy; development cluster nằm trong `%LOCALAPPDATA%\FixFlow\PostgreSQL\data` và chạy trên cổng `5433`. Cluster này không phụ thuộc Windows service trên cổng `5432`. Để khởi động lại cluster sau khi khởi động lại máy:
+
+```powershell
+$pgData = Join-Path $env:LOCALAPPDATA 'FixFlow\PostgreSQL\data'
+& 'C:\Program Files\PostgreSQL\17\bin\pg_ctl.exe' start -D $pgData -l (Join-Path (Split-Path $pgData) 'postgres.log') -o '-h 127.0.0.1 -p 5433'
+```
+
+Tạo file cấu hình riêng cho từng backend từ file mẫu:
 
 ```powershell
 cd backend\FixFlow.Api
-dotnet tool install --global dotnet-ef --version 8.0.22
+Copy-Item .env.example .env
+```
+
+Điền password PostgreSQL vào `.env`, sau đó chạy migration và API:
+
+```powershell
+dotnet tool restore
 dotnet ef database update
 dotnet run --urls http://localhost:5090
 ```
 
-Nếu đã cài `dotnet-ef`, bỏ qua lệnh cài tool. API thiết bị:
+Thực hiện tương tự với `backend\user-service` theo [hướng dẫn user service](./backend/user-service/README.md). Cả hai service đọc kết nối database từ `.env` hoặc biến môi trường; file `.env` không được commit.
+
+API thiết bị:
 
 | Method | Endpoint | Mô tả |
 |---|---|---|
@@ -67,9 +84,7 @@ Ví dụ body tạo/cập nhật:
 }
 ```
 
-Chuỗi kết nối nằm trong `backend/FixFlow.Api/appsettings.json` (`ConnectionStrings:DefaultConnection`), mặc định SQLite tạo file `fixflow.db`. Có thể đổi provider hoặc lấy chuỗi kết nối triển khai từ biến môi trường `ConnectionStrings__DefaultConnection`; không lưu thông tin bí mật trong file cấu hình được commit.
-
-Các lệnh migration chạy từ thư mục `backend\FixFlow.Api`:
+Các lệnh migration tiếp theo chạy từ thư mục `backend\FixFlow.Api`:
 
 ```powershell
 dotnet ef migrations add TenMigration
@@ -80,9 +95,9 @@ EF Core so sánh model với migration đã có để ghi lại thay đổi sche
 
 ## Kết nối Frontend
 
-Tạo file `.env` từ `.env.example`; `VITE_API_BASE_URL` được đặt mặc định là `http://localhost:5090/api`. Khởi chạy frontend ở terminal khác bằng `npm run dev`. CORS cho Vite localhost được cấu hình trong `appsettings.json`.
+Tạo file `.env` từ `.env.example`; `VITE_API_BASE_URL` được đặt mặc định là `http://localhost:5090/api` và `VITE_USER_API_BASE_URL` là `http://localhost:5087/api`. Khởi chạy frontend ở terminal khác bằng `npm run dev`. CORS cho Vite localhost được cấu hình trong từng service.
 
-API client dùng Axios tại `src/services/api/client.js`. Các hàm trong `src/services/api/equipment.js` minh họa `get`, `post`, `put`, và `delete`; các service request/work-order cũng sử dụng Axios. Backend hiện cung cấp CRUD thiết bị, các endpoint request và work-order cần được triển khai trước khi gọi các service tương ứng.
+API client dùng Axios tại `src/services/api/client.js`. Các hàm trong `src/services/api/equipment.js` minh họa `get`, `post`, `put`, và `delete`; `src/services/api/users.js` kết nối tới `backend/user-service`. Chạy user service riêng theo hướng dẫn tại `backend/user-service/README.md` (cần PostgreSQL); trang quản lý người dùng gọi API để liệt kê, tạo, sửa và xóa. Các service request/work-order cũng dùng Axios, nhưng endpoint tương ứng cần được triển khai trước khi gọi.
 
 ## Xuất cây thư mục Windows
 

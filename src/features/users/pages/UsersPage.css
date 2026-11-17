@@ -1,0 +1,39 @@
+.users-panel { overflow: hidden; min-height: 220px; border: 1px solid #edf0f4; border-radius: 12px; background: #fff; }
+.users-message { padding: 32px; color: #85909f; font-size: 13px; text-align: center; }
+.users-empty { display: grid; justify-items: center; align-content: center; min-height: 300px; padding: 32px; color: #3867e8; text-align: center; }
+.users-empty h2 { margin: 12px 0 5px; color: #17212f; font: 700 16px 'Manrope', sans-serif; }
+.users-empty p { margin: 0 0 18px; color: #8994a4; font-size: 12px; }
+.users-table-wrap { overflow-x: auto; }
+.users-table { width: 100%; border-collapse: collapse; text-align: left; }
+.users-table th { padding: 14px 18px; color: #8994a4; background: #fafbfc; font-size: 10px; font-weight: 700; letter-spacing: .45px; text-transform: uppercase; white-space: nowrap; }
+.users-table td { padding: 15px 18px; border-top: 1px solid #edf0f4; color: #526071; font-size: 12px; }
+.users-table td strong, .users-username { display: block; }
+.users-table td strong { color: #17212f; font-size: 12px; }
+.users-username { margin-top: 4px; color: #8994a4; font-size: 11px; }
+.users-status { display: inline-flex; align-items: center; min-height: 23px; padding: 0 9px; border-radius: 20px; font-size: 10px; font-weight: 600; white-space: nowrap; }
+.users-status--active { color: #16835d; background: #e9f8f1; }
+.users-status--inactive { color: #6d7785; background: #eef0f3; }
+.users-actions { display: flex; justify-content: flex-end; gap: 7px; }
+.users-icon-button { display: inline-grid; place-items: center; width: 34px; height: 34px; border: 1px solid #e6eaf0; border-radius: 8px; color: #526071; background: #fff; cursor: pointer; }
+.users-icon-button:hover:not(:disabled) { color: #3867e8; border-color: #cbd8ff; background: #f7f9ff; }
+.users-icon-button--danger:hover:not(:disabled) { color: #d64242; border-color: #f3cccc; background: #fff8f8; }
+.users-icon-button:disabled { cursor: not-allowed; opacity: .55; }
+.users-alert { margin: 0 0 14px; padding: 11px 13px; border: 1px solid #f1caca; border-radius: 8px; color: #a33434; background: #fff5f5; font-size: 12px; }
+.users-dialog-backdrop { position: fixed; z-index: 20; inset: 0; display: grid; place-items: center; overflow-y: auto; padding: 20px; background: #15223875; }
+.users-dialog { width: min(100%, 480px); padding: 23px; border: 1px solid #edf0f4; border-radius: 14px; background: #fff; box-shadow: 0 20px 70px #15223830; }
+.users-dialog__header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 20px; }
+.users-dialog__header h2 { margin: 5px 0 0; color: #17212f; font: 700 19px 'Manrope', sans-serif; }
+.users-form { display: grid; gap: 14px; }
+.users-form > label:not(.users-checkbox) { display: grid; gap: 6px; color: #526071; font-size: 11px; font-weight: 600; }
+.users-form input:not([type='checkbox']) { width: 100%; min-height: 40px; padding: 0 11px; border: 1px solid #dfe5ed; border-radius: 7px; color: #17212f; background: #fff; font: inherit; outline: none; }
+.users-form input:not([type='checkbox']):focus { border-color: #7190f0; box-shadow: 0 0 0 3px #3867e81a; }
+.users-checkbox { display: flex; align-items: center; gap: 8px; color: #526071; font-size: 12px; }
+.users-checkbox input { accent-color: #3867e8; }
+.users-form__actions { display: flex; justify-content: flex-end; gap: 9px; margin-top: 5px; }
+.users-form__actions button:disabled { cursor: wait; opacity: .65; }
+
+@media (max-width: 640px) {
+  .users-page .page-heading { align-items: flex-start; flex-direction: column; }
+  .users-table th, .users-table td { padding: 12px; }
+  .users-dialog { padding: 19px; }
+}
